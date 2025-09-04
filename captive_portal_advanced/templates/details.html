@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detaylı Ağ Bilgileri - Captive Portal</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .header { background-color: #2c3e50; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .info-box { background-color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .info-title { font-size: 18px; font-weight: bold; color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #3498db; padding-bottom: 5px; }
+        .info-item { margin: 10px 0; padding: 10px; background-color: #f8f9fa; border-left: 4px solid #3498db; }
+        .info-label { font-weight: bold; color: #34495e; }
+        .info-value { margin-top: 5px; font-family: monospace; background-color: #ecf0f1; padding: 8px; border-radius: 4px; }
+        .danger { border-left-color: #e74c3c !important; }
+        .warning { border-left-color: #f39c12 !important; }
+        .success { border-left-color: #27ae60 !important; }
+        .btn { background-color: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-right: 10px; }
+        .btn:hover { background-color: #2980b9; }
+        .dns-details { max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Detaylı Ağ Analizi</h1>
+        <p>Eğitim Amaçlı - Bağlantı #{{ event[0] }}</p>
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">🌐 IP Adresi Bilgileri</div>
+        <div class="info-item danger">
+            <div class="info-label">⚠️ Gerçek IP Adresi (Eğitim Amaçlı):</div>
+            <div class="info-value">{{ event[1] }}</div>
+        </div>
+        <div class="info-item warning">
+            <div class="info-label">🌍 Public IP Adresi:</div>
+            <div class="info-value">{{ event[10] }}</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">🔒 Maskelenmiş IP:</div>
+            <div class="info-value">{{ event[2] }}</div>
+        </div>
+        {% if event[8] != '-' %}
+        <div class="info-item warning">
+            <div class="info-label">🔗 X-Forwarded-For (Proxy):</div>
+            <div class="info-value">{{ event[8] }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">🖥️ Cihaz ve Tarayıcı Bilgileri</div>
+        <div class="info-item">
+            <div class="info-label">📱 User-Agent:</div>
+            <div class="info-value">{{ event[3] }}</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">🌍 Dil Tercihleri:</div>
+            <div class="info-value">{{ event[4] }}</div>
+        </div>
+        {% if event[9] != '-' %}
+        <div class="info-item">
+            <div class="info-label">🔙 Referer (Nereden Geldi):</div>
+            <div class="info-value">{{ event[9] }}</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">🏠 Sunucu Ağ Bilgileri</div>
+        <div class="info-item success">
+            <div class="info-label">🏷️ Hostname:</div>
+            <div class="info-value">{{ event[5] }}</div>
+        </div>
+        <div class="info-item success">
+            <div class="info-label">🔗 Sunucu Local IP:</div>
+            <div class="info-value">{{ event[6] }}</div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">📡 DNS ve Ağ Yapılandırması</div>
+        <div class="info-item">
+            <div class="info-label">🌐 DNS Sunucu Bilgileri:</div>
+            <div class="info-value dns-details">{{ event[7] }}</div>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">🔍 Ağ Tarama Sonuçları (Eğitim Amaçlı)</div>
+        {% if network_devices %}
+        <div class="info-item">
+            <div class="info-label">📱 Tespit Edilen Cihazlar:</div>
+            <div class="info-value">
+                {% for device in network_devices %}
+                    <div style="margin: 5px 0; padding: 5px; background-color: #e8f5e8; border-radius: 3px;">
+                        🔗 IP: {{ device.ip }} - 
+                        {% if device.status == 'active' %}✅ Aktif{% else %}❌ Pasif{% endif %}
+                        {% if device.response_time %} ({{ device.response_time }}){% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="info-item">
+            <div class="info-label">📱 Ağ Tarama:</div>
+            <div class="info-value">Tarama yapılmadı veya cihaz bulunamadı</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="info-box">
+        <div class="info-title">⏰ Zaman Bilgileri</div>
+        <div class="info-item">
+            <div class="info-label">📅 Bağlantı Zamanı:</div>
+            <div class="info-value">{{ event[12] }}</div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <a href="/admin" class="btn">🔙 Admin Paneli</a>
+        <a href="/export" class="btn">📊 CSV Export</a>
+    </div>
+
+    <div style="margin-top: 30px; padding: 15px; background-color: white; border-radius: 8px; border-left: 4px solid #e74c3c;">
+        <h4>⚠️ EĞİTİM AMAÇLI UYARI</h4>
+        <p><strong>Bu bilgiler sadece eğitim ve test amaçlıdır.</strong> Gerçek ortamlarda kişisel verilerin toplanması yasal düzenlemelere tabidir. Kullanırken yerel yasaları ve etik kuralları göz önünde bulundurun.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel - Captive Portal</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .header { background-color: #2c3e50; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .stats { display: flex; gap: 20px; margin-bottom: 20px; }
+        .stat-box { background-color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+        .stat-number { font-size: 24px; font-weight: bold; color: #3498db; }
+        .stat-label { color: #7f8c8d; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th { background-color: #34495e; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #ecf0f1; }
+        tr:hover { background-color: #f8f9fa; }
+        .actions { margin: 20px 0; }
+        .btn { background-color: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-right: 10px; }
+        .btn:hover { background-color: #2980b9; }
+        .device-info { font-size: 12px; color: #7f8c8d; }
+        .ip-address { font-family: monospace; background-color: #ecf0f1; padding: 4px 8px; border-radius: 4px; }
+        .time-info { font-size: 12px; color: #27ae60; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛡️ Captive Portal - Admin Paneli</h1>
+        <p>Eğitim/Test Amaçlı Ağ Analiz Sistemi</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat-box">
+            <div class="stat-number">{{ total_connections }}</div>
+            <div class="stat-label">Toplam Bağlantı</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">{{ unique_ips }}</div>
+            <div class="stat-label">Benzersiz IP</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">{{ today_connections }}</div>
+            <div class="stat-label">Bugünkü Bağlantı</div>
+        </div>
+    </div>
+
+    <div class="actions">
+        <a href="/export" class="btn">📊 CSV Export</a>
+        <a href="/admin" class="btn">🔄 Yenile</a>
+    </div>
+
+    <table>
+        <tr>
+            <th>#</th>
+            <th>🔍 Gerçek IP</th>
+            <th>🌐 Public IP</th>
+            <th>📱 Cihaz Bilgisi</th>
+            <th>🌍 Dil</th>
+            <th>🏠 Hostname</th>
+            <th>🔗 Local IP</th>
+            <th>📡 Ağ Cihazları</th>
+            <th>⏰ Bağlantı Zamanı</th>
+        </tr>
+        {% for row in rows %}
+        <tr>
+            <td><a href="/details/{{ row[0] }}" style="color: #3498db; font-weight: bold;">{{ loop.index }}</a></td>
+            <td><span class="ip-address" style="color: #e74c3c; font-weight: bold;">{{ row[1] }}</span></td>
+            <td><span class="ip-address" style="color: #f39c12; font-weight: bold;">{{ row[10] }}</span></td>
+            <td>
+                <div>{{ row[3][:30] }}{% if row[3]|length > 30 %}...{% endif %}</div>
+                <div class="device-info">
+                    {% if 'Mobile' in row[3] %}📱 Mobil{% elif 'Windows' in row[3] %}💻 Windows{% elif 'Mac' in row[3] %}🍎 Mac{% elif 'Linux' in row[3] %}🐧 Linux{% else %}🖥️ Bilinmeyen{% endif %}
+                </div>
+            </td>
+            <td>{{ row[4][:10] }}{% if row[4]|length > 10 %}...{% endif %}</td>
+            <td><span class="ip-address">{{ row[5] }}</span></td>
+            <td><span class="ip-address">{{ row[6] }}</span></td>
+            <td>
+                <div style="font-size: 11px;">
+                    {% set devices = row[11] %}
+                    {% if devices and devices != "[]" %}
+                        🔍 {{ (devices | length) if devices else 0 }} cihaz tespit edildi
+                    {% else %}
+                        Tarama yapılmadı
+                    {% endif %}
+                </div>
+            </td>
+            <td>
+                <div>{{ row[12][:19] }}</div>
+                <div class="time-info">{{ row[12][11:19] }}</div>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% if not rows %}
+    <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+        <h3>🔍 Henüz veri bulunmuyor</h3>
+        <p>Portal sayfasına bağlanan kullanıcılar burada görünecek.</p>
+    </div>
+    {% endif %}
+
+    <div style="margin-top: 30px; padding: 15px; background-color: white; border-radius: 8px; border-left: 4px solid #f39c12;">
+        <h4>⚠️ Eğitim/Test Amaçlı Sistem</h4>
+        <p>Bu sistem sadece eğitim ve test amaçlıdır. Gerçek ortamlarda kullanırken yasal düzenlemeleri göz önünde bulundurun.</p>
+    </div>
+</body>
+</html>

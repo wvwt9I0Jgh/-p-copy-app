@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Captive Portal - Ağ Erişimi</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        h2 { color: #2c3e50; margin-bottom: 10px; }
+        .subtitle { color: #7f8c8d; margin-bottom: 30px; }
+        .info-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left-color: #ffc107;
+            color: #856404;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+        .ip-display {
+            font-family: monospace;
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🛡️ Ağ Güvenlik Sistemi</h2>
+        <p class="subtitle">Eğitim/Test Amaçlı Captive Portal</p>
+        
+        <div class="info-box">
+            <strong>📍 Konumunuz tespit edildi:</strong><br>
+            IP Adresiniz: <span class="ip-display">{{ user_ip }}</span>
+        </div>
+        
+        <p>İnternet erişimi için güvenlik protokolünü onaylamanız gerekmektedir.</p>
+        
+        <form action="/accept" method="post">
+            <button type="submit" class="btn">🔓 Devam Et ve Onayla</button>
+        </form>
+        
+        <div class="info-box warning">
+            <strong>⚠️ Eğitim Amaçlı Uyarı:</strong><br>
+            Bu sistem sadece eğitim ve test amaçlıdır. Devam ederek ağ analizi yapılmasına izin vermiş olursunuz.
+        </div>
+    </div>
+
+    <script>
+        // Sayfa yüklendiğinde kullanıcı bilgilerini topla
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Captive Portal - Eğitim amaçlı ağ analizi aktif');
+            console.log('User IP:', '{{ user_ip }}');
+            console.log('User Agent:', navigator.userAgent);
+            console.log('Dil:', navigator.language);
+        });
+    </script>
+</body>
+</html>

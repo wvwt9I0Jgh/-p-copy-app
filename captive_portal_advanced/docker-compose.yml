@@ -1,0 +1,10 @@
+version: '3'
+services:
+  portal:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - ADMIN_USER=admin
+      - ADMIN_PASSWORD=changeme
+      - RETENTION_DAYS=7
